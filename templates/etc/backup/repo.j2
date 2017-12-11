@@ -1,0 +1,7 @@
+# {{ item['name'] }}
+{% for k, v in item.items() %}
+{% if k != "name" %}
+{{ k }}="{{ v }}"
+{% endif %}
+{% endfor %}
+{# for k, v in rest

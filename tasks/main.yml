@@ -17,3 +17,27 @@
     repo: 'https://github.com/binarybucks/restic-tools.git'
     dest: /opt/restic-tools
 
+- name: create confdir
+  file:
+    path: /etc/backup
+    state: directory
+    owner: root
+    group: root
+    mode: 'u=rwx,g=rwx'
+
+- name: create local.config
+  template:
+    src: etc/backup/local.config.j2
+    dest: /etc/backup/local.config
+    owner: root
+    group: root
+    mode: 'u=r'
+
+- name: create backup-configs
+  template:
+    src: etc/backup/repo.j2
+    dest: /etc/backup/{{ item.name }}.repo
+    owner: root
+    group: root
+    mode: 'u=r'
+  with_items: "{{ backup_destinations }}"

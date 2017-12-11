@@ -2,3 +2,15 @@
 # defaults file for restic-backup
 restic_version: 0.8.0
 restic_download_checksum: "sha256:8ddef07fe02333400b850d0893f14117ee05dd831c877a08e54a247da9e2fdbc"
+
+backup_destinations:
+  - name: b2-example
+    RESTIC_REPOSITORY: 'b2:something:something/'
+    B2_ACCOUNT_ID: 'account-id'
+    B2_ACCOUNT_KEY: 'account-key'
+    RESTIC_PASSWORD: 'generated'
+
+restic_local_config:
+  BACKUP_HOSTNAME: '{{ inventory_hostname }}'
+  BACKUP_DIR: '/'
+  HEALTHCHECK_URL: ''
