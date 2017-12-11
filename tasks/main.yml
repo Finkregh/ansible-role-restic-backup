@@ -1,0 +1,19 @@
+---
+# tasks file for restic-backup
+- name: download restic
+  get_url:
+    url: https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_linux_amd64.bz2
+    dest: /tmp/restic_{{ restic_version }}_linux_amd64.bz2
+    checksum: "{{ restic_download_checksum }}"
+  register: restic_downloader
+
+# unarchive wont work, waiting for https://github.com/ansible/ansible/pull/23048
+- name: unpack restic
+  command: bzip2 -d --stdout /tmp/restic_{{ restic_version }}_linux_amd64.bz2 > /usr/local/bin/restic
+  when: restic_downloader|changed
+
+- name: get restic-tools
+  git:
+    repo: 'https://github.com/binarybucks/restic-tools.git'
+    dest: /opt/restic-tools
+
