@@ -70,4 +70,5 @@
     name: restic-backup@{{ item.name }}.timer
     enabled: yes
     daemon_reload: yes
+    state: started
   with_items: "{{ backup_destinations }}"
