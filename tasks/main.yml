@@ -2,14 +2,25 @@
 # tasks file for restic-backup
 - name: download restic
   get_url:
-    url: https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_linux_amd64.bz2
-    dest: /tmp/restic_{{ restic_version }}_linux_amd64.bz2
-    checksum: "{{ restic_download_checksum }}"
+    url: https://github.com/restic/restic/releases/download/v{{ restic_version }}/restic_{{ restic_version }}_linux_{{ restic_arch }}.bz2
+    dest: /tmp/restic_{{ restic_version }}_linux_{{ restic_arch }}.bz2
+    # FIXME: get checksum from list...
+    #checksum: "{{ restic_download_checksum.{{ restic_arch }} }}"
   register: restic_downloader
 
 # unarchive wont work, waiting for https://github.com/ansible/ansible/pull/23048
 - name: unpack restic
-  command: bzip2 -d --stdout /tmp/restic_{{ restic_version }}_linux_amd64.bz2 > /usr/local/bin/restic
+  command: bzip2 -d /tmp/restic_{{ restic_version }}_linux_{{ restic_arch }}.bz2
+  when: restic_downloader|changed
+
+- name: move restic binary
+  command: mv /tmp/restic_{{ restic_version }}_linux_{{ restic_arch }} /usr/local/bin/restic
+  when: restic_downloader|changed
+
+- name: make restic binary executable
+  file:
+    path: /usr/local/bin/restic
+    mode: "u+x,g+x,o+x"
   when: restic_downloader|changed
 
 - name: get restic-tools
@@ -23,7 +34,7 @@
     state: directory
     owner: root
     group: root
-    mode: 'u=rwx,g=rwx'
+    mode: 'u=rwx,g=rwx,o='
 
 - name: create local.config
   template:
@@ -31,7 +42,7 @@
     dest: /etc/backup/local.config
     owner: root
     group: root
-    mode: 'u=r'
+    mode: 'u=r,g=,o='
 
 - name: create backup-configs
   template:
@@ -39,5 +50,24 @@
     dest: /etc/backup/{{ item.name }}.repo
     owner: root
     group: root
-    mode: 'u=r'
+    mode: 'u=r,g=,o='
+  with_items: "{{ backup_destinations }}"
+
+- name: install systemd service
+  copy:
+    src: restic-backup@.service
+    dest: /etc/systemd/system/
+  notify: systemd daemon-reload
+
+- name: install systemd timer
+  copy:
+    src: restic-backup@.timer
+    dest: /etc/systemd/system/
+  notify: systemd daemon-reload
+
+- name: enable systemd timer
+  systemd:
+    name: restic-backup@{{ item.name }}.timer
+    enabled: yes
+    daemon_reload: yes
   with_items: "{{ backup_destinations }}"

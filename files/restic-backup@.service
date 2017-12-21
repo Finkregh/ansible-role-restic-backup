@@ -1,0 +1,15 @@
+[Unit]
+Description=restic backup to %i
+After=network.target remote-fs.target
+
+[Service]
+User=root
+Type=oneshot
+#Environment=STNORESTART=yes
+ExecStart=/bin/sh -c "/opt/restic-tools/bin/backup %i backup --one-file-system --exclude=.cache /"
+#Restart=on-failure
+#SuccessExitStatus=2 3 4
+#RestartForceExitStatus=3 4
+
+#[Install]
+#WantedBy=multi-user.target

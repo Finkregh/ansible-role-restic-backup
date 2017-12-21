@@ -1,7 +1,9 @@
 ---
 # defaults file for restic-backup
 restic_version: 0.8.0
-restic_download_checksum: "sha256:8ddef07fe02333400b850d0893f14117ee05dd831c877a08e54a247da9e2fdbc"
+restic_download_checksum:
+  - arm: "sha256:fbb5435d1881e4a8df856378bbfa5b83bcb21ec9163a0690c63b88a83274729a"
+  - amd64: "sha256:8ddef07fe02333400b850d0893f14117ee05dd831c877a08e54a247da9e2fdbc"
 
 backup_destinations:
   - name: b2-example

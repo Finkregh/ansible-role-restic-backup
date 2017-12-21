@@ -1,0 +1,4 @@
+---
+# handlers file for restic-backup
+- name: systemd daemon-reload
+  shell: systemctl daemon-reload
