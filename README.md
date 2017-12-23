@@ -6,7 +6,7 @@ Install and configure https://github.com/binarybucks/restic-tools to do backups 
 Requirements
 ------------
 
--/-
+- systemd
 
 Role Variables
 --------------
@@ -34,7 +34,7 @@ restic_local_config:
 Dependencies
 ------------
 
-- systemd
+-/-
 
 Example Playbook
 ----------------
