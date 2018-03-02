@@ -1,9 +1,9 @@
 ---
 # defaults file for restic-backup
-restic_version: 0.8.0
+restic_version: 0.8.3
 restic_download_checksum:
-  - arm: "sha256:fbb5435d1881e4a8df856378bbfa5b83bcb21ec9163a0690c63b88a83274729a"
-  - amd64: "sha256:8ddef07fe02333400b850d0893f14117ee05dd831c877a08e54a247da9e2fdbc"
+  - arm: "sha256:6f252952b482ffac286cfec43774b6f510ad7f47eb7332ce8bbddc1400a91ec3"
+  - amd64: "sha256:1e9aca80c4f4e263c72a83d4333a9dac0e24b24e1fe11a8dc1d9b38d77883705"
 
 restic_jobs:
   - name: local-example
