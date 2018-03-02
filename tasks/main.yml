@@ -40,7 +40,7 @@
 
 - name: install systemd service
   copy:
-    src: restic-backup@.service
+    src: "{{ item }}"
     dest: /etc/systemd/system/
   with_items:
     - restic-backup@.service
