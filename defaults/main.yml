@@ -5,14 +5,22 @@ restic_download_checksum:
   - arm: "sha256:fbb5435d1881e4a8df856378bbfa5b83bcb21ec9163a0690c63b88a83274729a"
   - amd64: "sha256:8ddef07fe02333400b850d0893f14117ee05dd831c877a08e54a247da9e2fdbc"
 
-backup_destinations:
+restic_jobs:
+  - name: local-example
+    BACKUP_START_DIR: '/'
+    RESTIC_REPOSITORY: '/some/path'
+    RESTIC_PASSWORD: 'generated'
+    KEEP_DAILY: 7
+    KEEP_WEEKLY: 5
+    KEEP_MONTHLY: 12
+    EXCLUDE: ".cache"
+    ADDITIONAL_OPTS_BACKUP: "--one-file-system"
+    ADDITIONAL_OPTS_PRUNE: ""
   - name: b2-example
     RESTIC_REPOSITORY: 'b2:something:something/'
+    RESTIC_PASSWORD: 'generated'
+    KEEP_DAILY: 7
+    KEEP_WEEKLY: 5
+    KEEP_MONTHLY: 12
     B2_ACCOUNT_ID: 'account-id'
     B2_ACCOUNT_KEY: 'account-key'
-    RESTIC_PASSWORD: 'generated'
-
-restic_local_config:
-  BACKUP_HOSTNAME: '{{ inventory_hostname }}'
-  BACKUP_DIR: '/'
-  HEALTHCHECK_URL: ''

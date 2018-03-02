@@ -5,11 +5,9 @@ After=network.target remote-fs.target
 [Service]
 User=root
 Type=oneshot
-#Environment=STNORESTART=yes
-ExecStart=/bin/sh -c "/opt/restic-tools/bin/backup %i backup --one-file-system --exclude=.cache /"
+EnvironmentFile=/etc/restic/%p.%i
+ExecStart=/usr/local/bin/restic backup ${ADDITIONAL_OPTS_BACKUP} --exclude=${EXCLUDE} ${BACKUP_START_DIR}
+#&& curl -fsS --retry 3 https://hchk.io/15d62ad1-3e09-4587-bbd2-d892c91c7c53 > /dev/null
 #Restart=on-failure
 #SuccessExitStatus=2 3 4
 #RestartForceExitStatus=3 4
-
-#[Install]
-#WantedBy=multi-user.target

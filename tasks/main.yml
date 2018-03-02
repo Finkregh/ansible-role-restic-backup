@@ -23,41 +23,36 @@
     mode: "u+x,g+x,o+x"
   when: restic_downloader|changed
 
-- name: get restic-tools
-  git:
-    repo: 'https://github.com/binarybucks/restic-tools.git'
-    dest: /opt/restic-tools
-
-- name: create confdir
+- name: create restic confdir
   file:
-    path: /etc/backup
+    path: /etc/restic
+    mode: "u+x,g=,o="
     state: directory
-    owner: root
-    group: root
-    mode: 'u=rwx,g=rwx,o='
-
-- name: create local.config
-  template:
-    src: etc/backup/local.config.j2
-    dest: /etc/backup/local.config
-    owner: root
-    group: root
-    mode: 'u=r,g=,o='
 
 - name: create backup-configs
   template:
-    src: etc/backup/repo.j2
-    dest: /etc/backup/{{ item.name }}.repo
+    src: etc/restic/restic-backup.env.j2
+    dest: /etc/restic/restic-backup.{{ item.name }}
     owner: root
     group: root
-    mode: 'u=r,g=,o='
-  with_items: "{{ backup_destinations }}"
+    mode: 'u=rw,g=,o='
+  with_items: "{{ restic_jobs }}"
 
 - name: install systemd service
   copy:
     src: restic-backup@.service
     dest: /etc/systemd/system/
+  with_items:
+    - restic-backup@.service
+    - restic-prune@.service
   notify: systemd daemon-reload
+
+- name: enable systemd prune service
+  systemd:
+    name: restic-prune@{{ item.name }}.service
+    enabled: yes
+    daemon_reload: yes
+  with_items: "{{ restic_jobs }}"
 
 - name: install systemd timer
   copy:
@@ -71,4 +66,4 @@
     enabled: yes
     daemon_reload: yes
     state: started
-  with_items: "{{ backup_destinations }}"
+  with_items: "{{ restic_jobs }}"

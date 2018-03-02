@@ -1,0 +1,11 @@
+[Unit]
+Description=restic prune %i
+After=network.target remote-fs.target
+
+[Service]
+User=root
+Type=oneshot
+After=restic-backup@%i.service
+EnvironmentFile=/etc/restic/restic-backup.%i
+ExecStart=/usr/local/bin/restic forget ${ADDITIONAL_OPTS_PRUNE} --keep-daily ${KEEP_DAILY} --keep-weekly ${KEEP_WEEKLY} --keep-monthly ${KEEP_MONTHLY} --prune
+
